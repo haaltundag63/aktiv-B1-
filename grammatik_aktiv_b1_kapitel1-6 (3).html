@@ -1,0 +1,1030 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Grammatik aktiv B1+ — Karteikarten</title>
+<style>
+  :root{
+    --bg:#fafafa; --text:#1a1d29; --muted:#6b7280; --accent:#FF6B9D;
+    --card-bg:#ffffff;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;color:var(--text);
+    background: linear-gradient(160deg, #1B87A8 0%, #17A98F 55%, #22B893 100%);
+    background-attachment: fixed;
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+    height:100%; overflow-x:hidden;}
+  #app{min-height:100vh; display:flex; flex-direction:column;}
+
+  /* HOME */
+  .home{padding:18px 16px 50px; max-width:760px; margin:0 auto; width:100%;}
+  .home h1{font-size:23px; margin:4px 0 2px; font-weight:800; letter-spacing:-.01em; color:#fff; text-shadow:0 1px 4px rgba(0,0,0,0.15);}
+  .home p.sub{color:rgba(255,255,255,0.88); font-size:13.5px; margin:0 0 16px;}
+
+  .stats-card{background:linear-gradient(135deg,#FF6B9D 0%,#7048E8 100%); border-radius:20px;
+    padding:18px 20px; color:#fff; margin-bottom:18px; box-shadow:0 8px 24px rgba(112,72,232,0.25);}
+  .stats-row{display:flex; justify-content:space-between; align-items:center;}
+  .stats-num{font-size:28px; font-weight:800; line-height:1;}
+  .stats-label{font-size:11.5px; opacity:.9; margin-top:3px;}
+  .stats-bar-wrap{height:8px; background:rgba(255,255,255,0.3); border-radius:99px; margin-top:12px; overflow:hidden;}
+  .stats-bar{height:100%; background:#fff; border-radius:99px; transition:width .4s ease;}
+
+  .searchbox{width:100%; padding:11px 14px; border-radius:14px; border:1.5px solid #e5e7eb;
+    font-size:14px; margin-bottom:6px; background:#fff; outline:none;}
+  .searchbox:focus{border-color:var(--accent);}
+
+  .kgroup{font-size:12.5px; font-weight:800; color:rgba(255,255,255,0.85); margin:20px 2px 9px; text-transform:uppercase; letter-spacing:.06em;
+    display:flex; align-items:center; gap:8px; text-shadow:0 1px 3px rgba(0,0,0,0.1);}
+  .kgroup:first-of-type{margin-top:6px;}
+  .kgroup::after{content:''; flex:1; height:1px; background:rgba(255,255,255,0.35);}
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:11px;}
+  .card-tile{border-radius:18px; padding:15px 14px; cursor:pointer; border:none;
+    background:linear-gradient(155deg, color-mix(in srgb, var(--tc) 12%, white) 0%, #fff 65%);
+    box-shadow:0 1px 3px rgba(0,0,0,0.06), inset 0 0 0 1.5px color-mix(in srgb, var(--tc) 30%, white);
+    position:relative; transition:transform .15s ease, box-shadow .15s ease; min-height:126px;
+    display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;}
+  .card-tile:active{transform:scale(0.96);}
+  .card-tile .emoji{font-size:24px; display:inline-block;}
+  .card-tile h3{font-size:14px; margin:8px 0 3px; line-height:1.25; font-weight:700;}
+  .card-tile p{font-size:11.5px; color:var(--muted); margin:0; line-height:1.3;}
+  .pill{align-self:flex-start; margin-top:10px; font-size:10.5px; font-weight:700;
+    padding:3px 10px; border-radius:999px; color:#fff; background:var(--tc);}
+  .progress-mini{font-size:10px; color:var(--muted); margin-top:5px; display:flex; align-items:center; gap:5px;}
+  .mini-bar-wrap{flex:1; height:4px; background:#eee; border-radius:99px; overflow:hidden;}
+  .mini-bar{height:100%; background:var(--tc); border-radius:99px;}
+  .done-badge{position:absolute; top:10px; right:10px; font-size:14px;}
+
+  /* STUDY */
+  .study{display:none; flex-direction:column; height:100vh; background:transparent;}
+  .study.active{display:flex;}
+  .topbar{display:flex; align-items:center; justify-content:space-between; padding:14px 16px 10px;}
+  .backbtn{background:#fff;border:none;font-size:14px;color:var(--text);cursor:pointer;padding:8px 14px;
+    border-radius:12px; font-weight:600; box-shadow:0 1px 3px rgba(0,0,0,0.08);}
+  .topbar .label{font-size:13px; font-weight:700; color:#fff; text-align:center; flex:1; text-shadow:0 1px 3px rgba(0,0,0,0.15);}
+  .fsbtn{background:#fff;border:none;font-size:16px;cursor:pointer;padding:8px 11px; border-radius:12px;
+    box-shadow:0 1px 3px rgba(0,0,0,0.08);}
+  .stage{flex:1; display:flex; align-items:center; justify-content:center; padding:16px; position:relative; perspective:1400px;}
+  .flashcard{width:100%; max-width:480px; min-height:290px; border-radius:24px; cursor:pointer; user-select:none;
+    position:relative; transform-style:preserve-3d; transition:transform .5s cubic-bezier(.4,.2,.2,1);}
+  .flashcard.flipped{transform:rotateY(180deg);}
+  .face{position:absolute; inset:0; backface-visibility:hidden; border-radius:24px; background:var(--card-bg);
+    box-shadow:0 10px 30px rgba(0,0,0,0.10); display:flex; flex-direction:column; align-items:center;
+    justify-content:center; padding:30px 24px; text-align:center; border-top:9px solid var(--tc);}
+  .face.back{transform:rotateY(180deg); background:var(--tc); border-top:none;}
+  .de-text{font-size:19px; font-weight:700; line-height:1.45; color:var(--text);}
+  .tr-text{font-size:18px; color:#fff; line-height:1.45; font-weight:600;}
+  .hint{font-size:11px; color:var(--muted); margin-top:14px; font-weight:600;}
+  .face.back .hint{color:rgba(255,255,255,0.85);}
+  .navrow{display:flex; align-items:center; justify-content:space-between; padding:12px 20px 24px; gap:10px;}
+  .navbtn{background:#fff; border:none; border-radius:14px; padding:13px 20px; font-size:19px;
+    cursor:pointer; color:var(--text); box-shadow:0 2px 8px rgba(0,0,0,0.08); font-weight:700;}
+  .navbtn:disabled{opacity:0.25;}
+  .navbtn:active{transform:scale(0.94);}
+  .counter{font-size:12.5px; color:rgba(255,255,255,0.9); font-weight:700; text-shadow:0 1px 2px rgba(0,0,0,0.1);}
+  .barwrap{height:5px; background:#eee; margin:0 16px; border-radius:99px; overflow:hidden;}
+  .bar{height:100%; background:var(--tc); transition:width .25s ease; border-radius:99px;}
+  .empty-msg{text-align:center; color:rgba(255,255,255,0.85); font-size:14px; margin-top:40px;}
+  .dirbtn{background:rgba(255,255,255,0.9); border:none; border-radius:12px; padding:8px 16px;
+    font-size:12.5px; font-weight:700; color:var(--text); cursor:pointer; box-shadow:0 1px 4px rgba(0,0,0,0.08);}
+  .dirbtn:active{transform:scale(0.96);}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+const SECTIONS = [
+  {
+    id: "verben",
+    title: "Vokalwechsel-Verben",
+    emoji: "🔤",
+    color: "#FF6B9D",
+    teaser: "Präsens er/sie/es Formen",
+    cards: [
+      ["sprechen – er spricht","konuşmak – o konuşuyor"],
+      ["nehmen – er nimmt","almak – o alıyor"],
+      ["helfen – er hilft","yardım etmek – o yardım ediyor"],
+      ["werden – er wird","olmak – o oluyor"],
+      ["bewerben (sich) – er bewirbt sich","başvurmak – o başvuruyor"],
+      ["treffen – er trifft","buluşmak/isabet etmek – o buluşuyor"],
+      ["brechen – er bricht","kırmak – o kırıyor"],
+      ["treten – er tritt","tekme atmak/adım atmak – o adım atıyor"],
+      ["lesen – er liest","okumak – o okuyor"],
+      ["sehen – er sieht","görmek – o görüyor"],
+      ["fallen – er fällt","düşmek – o düşüyor"],
+      ["einladen – er lädt ein","davet etmek – o davet ediyor"],
+      ["schlagen – er schlägt","vurmak/dövmek – o vuruyor"],
+      ["tragen – er trägt","taşımak – o taşıyor"],
+      ["laufen – er läuft","koşmak – o koşuyor"],
+      ["fangen – er fängt","yakalamak – o yakalıyor"],
+      ["fahren – er fährt","sürmek/gitmek – o gidiyor"],
+      ["halten – er hält","tutmak – o tutuyor"],
+      ["lassen – er lässt","bırakmak – o bırakıyor"],
+      ["machen – er macht (kein Vokalwechsel)","yapmak – o yapıyor (vokal değişimi yok)"],
+      ["sagen – er sagt","söylemek – o söylüyor"],
+      ["reden – er redet","konuşmak – o konuşuyor"],
+      ["gehen – er geht","gitmek – o gidiyor"],
+      ["kaufen – er kauft","satın almak – o alıyor"],
+      ["stehen – er steht","durmak – o duruyor"],
+      ["denken – er denkt","düşünmek – o düşünüyor"],
+      ["kennen – er kennt","tanımak – o tanıyor"]
+    ]
+  },
+  {
+    id: "praefixe",
+    title: "Trennbar & Untrennbar",
+    emoji: "✂️",
+    color: "#4ECDC4",
+    teaser: "Präfixe + Beispielsätze",
+    cards: [
+      ["Trennbare Präfixe: aus, an, ab, bei, ein, fern, nach, teil, vor, vorbei, weg","Ayrılabilir önekler — vurgulanır, cümlede ayrılır"],
+      ["Untrennbare Präfixe: be, er, ent, ge, miss, ver, emp, zer","Ayrılamaz önekler — vurgulanmaz, hep fiille kalır"],
+      ["beitragen = katkıda bulunmak","Er trägt heute nichts zur Diskussion bei."],
+      ["betragen = tutmak (miktar)","Die Teilnahmegebühr beträgt 250 Euro."],
+      ["bekommen = almak, elde etmek","Sie bekommt eine finanzielle Unterstützung."],
+      ["vorbeikommen = uğramak","Wann kommst du heute Nachmittag bei mir vorbei?"],
+      ["vortragen = sunmak, sunum yapmak","Heute trägt sie ihre Präsentation über Wien vor."],
+      ["vertragen = tolere etmek, kaldırmak","Sie trinkt den Kaffee schwarz, weil sie keine Kuhmilch verträgt."],
+      ["nachschlagen = (sözlükte) aramak","Es ist besser, wenn du nicht jedes Wort im Wörterbuch nachschlägst."],
+      ["verhalten (sich) = davranmak","Ich finde, dass der Kollege sich merkwürdig verhält."],
+      ["teilnehmen = katılmak","Meine Schwester nimmt am „Bürgerforum Europa“ teil."],
+      ["mitlaufen = birlikte koşmak, katılmak","Sie läuft schon seit 10 Jahren beim Marathon in Berlin mit."],
+      ["beibringen = (bir şeyi) öğretmek","Ich hoffe, dass meine Freundin mir Tangotanzen beibringt."],
+      ["verbringen = (vakit) geçirmek","Ich verbringe meinen Urlaub am liebsten in den Bergen."],
+      ["vorstellen = tanıtmak, sunmak","Ich stelle heute meine Heimatstadt vor."],
+      ["sich befinden = bulunmak","Sie schreibt, dass sie sich in einer schwierigen Situation befindet."]
+    ]
+  },
+  {
+    id: "dialoge",
+    title: "Dialoge & Sätze",
+    emoji: "💬",
+    color: "#FFB347",
+    teaser: "Im Büro / Zu Hause / Pronomen",
+    cards: [
+      ["Herr Schnitzler, hier spricht Koester, haben Sie einen Moment Zeit?","Bay Schnitzler, ben Koester, bir dakikanız var mı?"],
+      ["Ja, worum geht es denn?","Evet, konu nedir?"],
+      ["Ich habe hier eine E-Mail von der Firma Sanders, die ich nicht verstehe.","Elimde Sanders firmasından anlamadığım bir e-posta var."],
+      ["Ein Herr Kolakowski schreibt, dass die Rechnung nicht mit dem Angebot übereinstimmt.","Bay Kolakowski, faturanın teklifle uyuşmadığını yazıyor."],
+      ["Können Sie mir bitte das Angebot schicken?","Teklifi bana gönderebilir misiniz lütfen?"],
+      ["Hi, Tobi, kommst du am Freitag auch zum Training?","Selam Tobi, cuma günü sen de antrenmana geliyor musun?"],
+      ["Nein, tut mir leid, ich kann nicht.","Hayır, üzgünüm, gelemem."],
+      ["Mein Vater feiert seinen 50. Geburtstag.","Babam 50. doğum gününü kutluyor."],
+      ["Da darf ich nicht fehlen.","Orada eksik olamam / gitmem lazım."],
+      ["Wir haben das Haus voll mit Besuch.","Evimiz misafirle dolu."],
+      ["Ich weiß nicht, ob es morgen regnet.","Yarın yağmur yağacak mı bilmiyorum."],
+      ["Ich möchte Kaffee.","Kahve istiyorum."],
+      ["Er kommt zu spät.","O geç geliyor."],
+      ["Er arbeitet heute bis 18 Uhr.","Bugün saat 18'e kadar çalışıyor."],
+      ["Du schließt die Tür.","Kapıyı kapatıyorsun."],
+      ["Sie arbeitet heute bis 18 Uhr.","O (kadın) bugün saat 18'e kadar çalışıyor."],
+      ["Man arbeitet heute bis 18 Uhr.","İnsan bugün saat 18'e kadar çalışır."],
+      ["Sie schließt die Tür.","O (kadın) kapıyı kapatıyor."],
+      ["Man schließt die Tür.","İnsan kapıyı kapatır."]
+    ]
+  },
+  {
+    id: "stralsund",
+    title: "Vortrag: Stralsund",
+    emoji: "🗺️",
+    color: "#9B7EDE",
+    teaser: "Fehlersätze korrigiert",
+    cards: [
+      ["Ich stelle heute meine Heimatstadt vor.","Bugün memleketimi tanıtıyorum."],
+      ["Ich weiß nicht, ob ihr alle wisst, wo Stralsund liegt.","Stralsund'un nerede olduğunu hepinizin bilip bilmediğini bilmiyorum."],
+      ["Wahrscheinlich nicht, deshalb habe ich hier ein paar PowerPoint-Folien.","Muhtemelen bilmiyorsunuz, bu yüzden birkaç PowerPoint slaydım var."],
+      ["Lea, kannst du bitte das Licht ausmachen?","Lea, ışığı kapatabilir misin lütfen?"],
+      ["Hier ist eine Karte von Deutschland, und ganz oben, ganz im Osten sieht man einen roten Punkt.","İşte Almanya haritası, en üstte, en doğuda kırmızı bir nokta görünüyor."],
+      ["Das ist Stralsund.","Bu Stralsund."],
+      ["Und in der Ostsee direkt gegenüber von Stralsund liegt die Insel Rügen.","Baltık Denizi'nde Stralsund'un tam karşısında Rügen adası var."],
+      ["Wahrscheinlich kennt ihr alle das berühmte Bild von Caspar David Friedrich mit der Felsküste von Rügen.","Muhtemelen hepiniz Caspar David Friedrich'in Rügen kayalıklarını gösteren ünlü tablosunu tanıyorsunuzdur."],
+      ["Stralsund ist wie zum Beispiel Hamburg, Bremen und Rostock eine Hansestadt und hat eine lange kaufmännische Tradition.","Stralsund, Hamburg, Bremen ve Rostock gibi bir Hansa şehridir ve uzun bir ticaret geleneğine sahiptir."],
+      ["Seit 2002 gehört die Altstadt zum UNESCO-Weltkulturerbe.","2002'den beri eski şehir UNESCO Dünya Mirası listesinde."],
+      ["Es gibt viele interessante Veranstaltungen in Stralsund.","Stralsund'da birçok ilginç etkinlik var."],
+      ["Mir gefällt am besten das Hafenfest, das im Juni stattfindet.","En çok Haziran'da yapılan liman festivalini seviyorum."],
+      ["Wenn man möchte, kann man in der Ostsee baden, obwohl sie auch im Sommer relativ kalt ist.","İsteyen, yazın bile nispeten soğuk olmasına rağmen Baltık Denizi'nde yüzebilir."],
+      ["Vielen Dank für eure Aufmerksamkeit!","İlginiz için çok teşekkür ederim!"],
+      ["Wenn ihr Fragen habt, stehe ich euch gerne zur Verfügung.","Sorularınız varsa size seve seve yardımcı olurum."]
+    ]
+  },
+  {
+    id: "musik",
+    title: "Blogbeitrag: Musik",
+    emoji: "🎵",
+    color: "#5BC0EB",
+    teaser: "Modalverben & Präsens (gelöst)",
+    cards: [
+      ["Meiner Meinung nach gehört Musik zu unserem Leben.","Bence müzik hayatımızın bir parçasıdır."],
+      ["Ein Leben ohne Musik können sich Menschen in unserer Welt kaum noch vorstellen.","İnsanlar dünyamızda müziksiz bir hayatı zor hayal edebiliyor."],
+      ["Man hört Musik im Radio.","İnsan radyoda müzik dinler."],
+      ["Man speichert Musik auf dem Smartphone.","İnsan müziği akıllı telefonda saklar."],
+      ["Man hört sie zum Beispiel auf dem Weg zur Arbeit.","Örneğin işe giderken dinler."],
+      ["Oder man geht in ein Konzert.","Ya da bir konsere gider."],
+      ["Besonders schön ist es natürlich, wenn man nicht nur passiv Musik aufnimmt.","Sadece pasif olarak müzik dinlemek değil, elbette özellikle güzel olan şey şudur."],
+      ["Sondern wenn man selbst aktiv Musik machen kann.","Kişinin kendisinin de aktif olarak müzik yapabilmesi."],
+      ["Deshalb finde ich es sehr gut, wenn Kinder ein Musikinstrument erlernen.","Bu yüzden çocukların bir müzik aleti öğrenmesini çok iyi buluyorum."],
+      ["Schon kleine Kinder mögen Musik.","Küçük çocuklar bile müziği sever."],
+      ["Sie hören gerne Musik und singen gerne.","Müzik dinlemeyi ve şarkı söylemeyi severler."],
+      ["Meistens weiß ein kleines Kind noch nicht, welches Instrument es gerne spielen „möchte“.","Genellikle küçük bir çocuk hangi aleti çalmak istediğini henüz bilmez."],
+      ["Deshalb kann man es in einer Musikschule anmelden.","Bu yüzden onu bir müzik okuluna kaydettirebilir."],
+      ["Dort lernen die Kinder verschiedene Instrumente kennen.","Orada çocuklar farklı enstrümanları tanır."],
+      ["Und können sie ausprobieren.","Ve onları deneyebilirler."],
+      ["Oft entscheidet sich dann ein Kind für ein Instrument, das ihm besonders gefällt.","Genellikle çocuk özellikle hoşuna giden bir enstrümanı seçer."],
+      ["Und das es gerne lernen „möchte“.","Ve öğrenmek istediği enstrümanı."],
+      ["Allerdings muss man auch bedenken, dass es viel Zeit und Geduld braucht, ein Instrument zu lernen.","Ancak bir enstrüman öğrenmenin çok zaman ve sabır gerektirdiğini de düşünmek gerekir."],
+      ["Die Eltern müssen das Kind zum Unterricht bringen.","Ebeveynler çocuğu derse götürmelidir."],
+      ["Sie müssen darauf achten, dass das Kind regelmäßig übt.","Çocuğun düzenli çalışmasına dikkat etmelidirler."],
+      ["Und nicht zuletzt sind Musikstunden Privatunterricht und der kostet viel Geld.","Son olarak müzik dersleri özel derstir ve çok paraya mal olur."],
+      ["Deshalb kann ich gut verstehen, wenn Eltern es nicht fördern, dass ihr Kind ein Musikinstrument lernt.","Bu yüzden ebeveynlerin çocuklarının bir enstrüman öğrenmesini desteklememesini iyi anlayabiliyorum."]
+    ]
+  },
+  {
+    id: "k1-hilferuf",
+    title: "K1: Ein Hilferuf (E-Mail)",
+    emoji: "✉️",
+    color: "#FF6B9D",
+    teaser: "E-Mail an Klara, komplett",
+    cards: [
+      ["Kennst du noch Maria?","Maria'yı hâlâ hatırlıyor musun?"],
+      ["Sie wohnt in meiner WG und macht gerade ein Praktikum im Ausland.","Benim paylaşımlı evimde oturuyor ve şu anda yurtdışında staj yapıyor."],
+      ["Sie arbeitet bei Hoffmann & Malz.","Hoffmann & Malz'da çalışıyor."],
+      ["Sie schreibt, dass sie sich in einer schwierigen Situation befindet und bittet mich um Hilfe.","Zor bir durumda olduğunu yazıyor ve benden yardım istiyor."],
+      ["Ihre Kollegin, mit der sie sehr eng zusammenarbeitet, benimmt sich sehr komisch.","Çok yakın çalıştığı meslektaşı çok tuhaf davranıyor."],
+      ["Wenn Lea sie etwas fragt, dann antwortet sie entweder gar nicht oder sie reagiert unfreundlich.","Lea ona bir şey sorduğunda ya hiç cevap vermiyor ya da kaba tepki veriyor."],
+      ["Sie hilft ihr auch überhaupt nicht.","Ona hiç yardım da etmiyor."],
+      ["Maria braucht aber Hilfe, sie arbeitet ja erst seit ein paar Wochen dort und kennt sich natürlich noch nicht gut aus.","Ama Maria'nın yardıma ihtiyacı var, orada sadece birkaç haftadır çalışıyor ve elbette henüz oraya alışamadı."],
+      ["Und außerdem beherrscht sie noch nicht ganz perfekt Deutsch.","Üstelik Almancaya da henüz tam hakim değil."],
+      ["Wenn sie eine E-Mail schreiben muss, dann braucht sie sehr lange, weil sie natürlich keine Fehler machen möchte.","Bir e-posta yazması gerektiğinde çok uzun sürüyor çünkü elbette hata yapmak istemiyor."],
+      ["Da habe ich an dich gedacht.","Bu yüzden seni düşündüm."],
+      ["Du bist doch fit in Bürokommunikation.","Sen ofis yazışmalarında iyisindir."],
+      ["Kannst du ihr nicht anbieten, ihre Mails gegenzulesen?","Ona e-postalarını kontrol etmeyi teklif edemez misin?"],
+      ["Dann braucht sie sich um die Korrektheit nicht zu kümmern und spart viel Zeit.","O zaman doğruluğuyla uğraşmasına gerek kalmaz ve çok zaman kazanır."],
+      ["Ich hoffe sehr, dass du Zeit hast und ihr hilfst!","Umarım vaktin vardır ve ona yardım edersin!"],
+      ["Wenn sie zurückkommt, möchte sie dich bestimmt ganz groß zum Essen einladen.","Geri döndüğünde seni kesinlikle büyük bir yemeğe davet etmek isteyecek."]
+    ]
+  },
+  {
+    id: "k4-partizip",
+    title: "K4: Partizip II – Verben",
+    emoji: "📝",
+    color: "#F59F00",
+    teaser: "57 Verben mit Partizip Perfekt",
+    cards: [
+      ["gefallen – gefallen","hoşuna gitmek"],
+      ["fallen – gefallen","düşmek"],
+      ["wegfallen – weggefallen","ortadan kalkmak"],
+      ["stehen – gestanden","durmak, ayakta olmak"],
+      ["verstehen – verstanden","anlamak"],
+      ["bestehen – bestanden","var olmak / (sınavı) geçmek"],
+      ["schreiben – geschrieben","yazmak"],
+      ["beschreiben – beschrieben","tasvir etmek"],
+      ["aufschreiben – aufgeschrieben","not almak, yazmak"],
+      ["gehen – gegangen","gitmek"],
+      ["entgehen – entgangen","kaçırmak, kurtulmak"],
+      ["weggehen – weggegangen","uzaklaşmak, gitmek"],
+      ["nehmen – genommen","almak"],
+      ["teilnehmen – teilgenommen","katılmak"],
+      ["aufnehmen – aufgenommen","kaydetmek, kabul etmek"],
+      ["arbeiten – gearbeitet","çalışmak"],
+      ["bearbeiten – bearbeitet","üzerinde çalışmak, işlemek"],
+      ["mitarbeiten – mitgearbeitet","birlikte çalışmak"],
+      ["hören – gehört","duymak"],
+      ["zuhören – zugehört","kulak vermek"],
+      ["gehören – gehört","ait olmak"],
+      ["kaufen – gekauft","satın almak"],
+      ["einkaufen – eingekauft","alışveriş yapmak"],
+      ["verkaufen – verkauft","satmak"],
+      ["stellen – gestellt","koymak, yerleştirmek"],
+      ["bestellen – bestellt","sipariş etmek"],
+      ["ausstellen – ausgestellt","sergilemek"],
+      ["legen – gelegt","koymak, yatırmak"],
+      ["hinlegen – hingelegt","yere koymak"],
+      ["zerlegen – zerlegt","parçalara ayırmak"],
+      ["passieren – passiert","olmak, gerçekleşmek"],
+      ["studieren – studiert","üniversitede okumak"],
+      ["informieren – informiert","bilgilendirmek"],
+      ["funktionieren – funktioniert","çalışmak (işlev)"],
+      ["programmieren – programmiert","programlamak"],
+      ["kommen – gekommen","gelmek"],
+      ["bekommen – bekommen","almak, elde etmek"],
+      ["ankommen – angekommen","varmak"],
+      ["mitmachen – mitgemacht","katılmak"],
+      ["verpassen – verpasst","kaçırmak (fırsat, otobüs)"],
+      ["reparieren – repariert","tamir etmek"],
+      ["denken – gedacht","düşünmek"],
+      ["bringen – gebracht","getirmek"],
+      ["wissen – gewusst","bilmek"],
+      ["kennen – gekannt","tanımak"],
+      ["rennen – gerannt","koşmak"],
+      ["brennen – gebrannt","yanmak"],
+      ["halten – gehalten","tutmak"],
+      ["abfahren – abgefahren","kalkmak (araç)"],
+      ["organisieren – organisiert","organize etmek"],
+      ["vergessen – vergessen","unutmak"],
+      ["verschicken – verschickt","göndermek"],
+      ["mitnehmen – mitgenommen","yanında götürmek"],
+      ["fragen – gefragt","sormak"],
+      ["tun – getan","yapmak"],
+      ["liegen – gelegen","yatmak, bulunmak"],
+      ["essen – gegessen","yemek"]
+    ]
+  },
+  {
+    id: "k4-peinlich",
+    title: "K4: Peinlich & sein/haben",
+    emoji: "😳",
+    color: "#F08C00",
+    teaser: "Perfekt-Geschichte + Dialekt-Text",
+    cards: [
+      ["Gestern bin ich – wie leider schon oft – zu spät aufgestanden und habe den Bus verpasst.","Dün maalesef yine sık olduğu gibi geç kalktım ve otobüsü kaçırdım."],
+      ["Deshalb bin ich sehr spät zur Arbeit gekommen.","Bu yüzden işe çok geç geldim."],
+      ["Das Meeting hat gerade angefangen.","Toplantı yeni başlamıştı."],
+      ["Mein Kollege hat begonnen, sein Projekt vorzustellen.","Meslektaşım projesini sunmaya başlamıştı."],
+      ["Ich habe mich schnell auf meinen Platz gesetzt.","Hızlıca yerime oturdum."],
+      ["Aber dann ist mir mit lautem Krach meine Tasche heruntergefallen.","Ama sonra çantam gürültüyle yere düştü."],
+      ["Die Kollegen haben ärgerlich zu mir hergesehen.","Meslektaşlarım kızgın bir şekilde bana baktı."],
+      ["Ich habe so getan, als ob ich es nicht merken würde.","Fark etmemiş gibi davrandım."],
+      ["Aber es war mir sehr peinlich und ich bin sehr rot geworden.","Ama çok utandım ve kıpkırmızı oldum."],
+      ["Heute Abend habe ich mir zwei Wecker gestellt.","Bu akşam kendime iki çalar saat kurdum."],
+      ["Regel: Reflexive Verben bilden das Perfekt immer mit haben.","Dönüşlü fiiller Perfekt'i her zaman haben ile oluşturur."],
+      ["sein-Verben: Position wechselt (einsteigen, fahren, kommen, laufen, sinken), Situation wechselt (aufwachen, einschlafen, sterben, verschwinden), ohne Regel (sein, bleiben).","sein ile çekilenler: konum değişimi (binmek, gitmek, gelmek, koşmak, batmak), durum değişimi (uyanmak, uykuya dalmak, ölmek, kaybolmak), kuralsız (olmak, kalmak)."],
+      ["Ich bin ganz im Norden von Deutschland in einem kleinen Dorf aufgewachsen.","Almanya'nın en kuzeyinde küçük bir köyde büyüdüm."],
+      ["In dem Dorf haben die älteren Leute noch Plattdeutsch gesprochen.","O köyde yaşlılar hâlâ Aşağı Almanca konuşuyordu."],
+      ["Aber unter uns jüngeren Leuten ist der Dialekt schon verloren gegangen.","Ama biz gençler arasında bu lehçe zaten kayboldu."],
+      ["Wir haben als Kinder den Dialekt gehört, aber haben ihn nicht mehr richtig gesprochen.","Çocukken bu lehçeyi duyardık ama artık düzgün konuşamıyorduk."],
+      ["Nur einige Dialektwörter, wie zum Beispiel „vertellen“ (= erzählen), sind in der Umgangssprache übriggeblieben.","Sadece „vertellen“ (= anlatmak) gibi birkaç lehçe kelimesi günlük dilde kaldı."],
+      ["Ich habe das immer sehr bedauert.","Bunu her zaman çok üzücü buldum."],
+      ["Ich finde es sehr schade, dass dieser schöne Dialekt schon fast verschwunden ist.","Bu güzel lehçenin neredeyse tamamen kaybolmuş olmasını çok yazık buluyorum."],
+      ["Natürlich haben sich Initiativen gegründet, um das Plattdeutsche zu retten.","Elbette Aşağı Almancayı kurtarmak için girişimler kuruldu."],
+      ["Ich habe zum Beispiel an der Volkshochschule einen Sprachkurs für Plattdeutsch besucht.","Örneğin halk eğitim merkezinde bir Aşağı Almanca dil kursuna katıldım."]
+    ]
+  },
+  {
+    id: "k4-biografie",
+    title: "K4: Biografie Karl Marx",
+    emoji: "📚",
+    color: "#E8590C",
+    teaser: "Text im Perfekt formuliert",
+    cards: [
+      ["Karl Marx ist 1818 in Trier zur Welt gekommen.","Karl Marx 1818'de Trier'de dünyaya geldi."],
+      ["Er hat von 1830 bis 1835 das Gymnasium in Trier besucht.","1830-1835 arası Trier'de liseye gitti."],
+      ["Mit 17 Jahren hat er das Abitur mit der Durchschnittsnote 2,4 abgelegt.","17 yaşında 2,4 ortalamayla liseyi bitirdi."],
+      ["1836 hat sich Marx mit Jenny von Westfalen, der Schwester seines besten Freundes, verlobt.","1836'da en iyi arkadaşının kız kardeşi Jenny von Westfalen ile nişanlandı."],
+      ["Von 1835 bis 1841 hat er an den Universitäten Bonn und Berlin Jura studiert.","1835-1841 arası Bonn ve Berlin üniversitelerinde hukuk okudu."],
+      ["Karl Marx und Jenny von Westfalen haben geheiratet und sind nach Paris gezogen.","Karl Marx ve Jenny von Westfalen evlendi ve Paris'e taşındı."],
+      ["Dort hat Marx den Dichter Heinrich Heine kennengelernt.","Orada şair Heinrich Heine ile tanıştı."],
+      ["Aus politischen Gründen ist Marx nicht in Paris geblieben.","Siyasi nedenlerle Marx Paris'te kalmadı."],
+      ["Die preußische Regierung hat ihn gezwungen, Frankreich zu verlassen, und Marx ist mit seiner Familie nach Brüssel umgezogen.","Prusya hükümeti onu Fransa'yı terk etmeye zorladı ve Marx ailesiyle Brüksel'e taşındı."],
+      ["Er hat nur drei Jahre in Brüssel gelebt.","Brüksel'de sadece üç yıl yaşadı."],
+      ["Nach der Februarrevolution 1848 hat er Brüssel verlassen und ist zunächst nach Paris und dann nach London gegangen.","1848 Şubat Devrimi'nden sonra Brüksel'i terk etti ve önce Paris'e, sonra Londra'ya gitti."],
+      ["Marx ist 1883 in London gestorben.","Marx 1883'te Londra'da öldü."]
+    ]
+  },
+  {
+    id: "k4-schulfreunde",
+    title: "K4: Schulfreunde",
+    emoji: "🎓",
+    color: "#D9480F",
+    teaser: "Partizip Perfekt, sein/haben (gelöst)",
+    cards: [
+      ["Am letzten Wochenende habe ich alte Schulfreunde getroffen, die ich seit der Schule nicht mehr gesehen habe.","Geçen hafta sonu okuldan beri görmediğim eski okul arkadaşlarımla buluştum."],
+      ["Erst haben wir Erinnerungen ausgetauscht und uns lange über unsere Schule, die Lehrer und die Klassenkameraden unterhalten.","Önce anılarımızı paylaştık ve okulumuz, öğretmenlerimiz ve sınıf arkadaşlarımız hakkında uzun uzun sohbet ettik."],
+      ["Jeder und jede von uns hat sich an andere Dinge erinnert.","Her birimiz farklı şeyleri hatırladı."],
+      ["Dann haben wir darüber gesprochen, was wir nach der Schule gemacht haben.","Sonra okuldan sonra ne yaptığımız hakkında konuştuk."],
+      ["Da hat mich vieles überrascht.","Beni birçok şey şaşırttı."],
+      ["Anna, die immer lustige Späße gemacht hat und die nichts ernst genommen hat und sich für Literatur interessiert hat, arbeitet jetzt als Buchhalterin.","Her zaman komik şakalar yapan, hiçbir şeyi ciddiye almayan ve edebiyatla ilgilenen Anna, şimdi muhasebeci olarak çalışıyor."],
+      ["Wir haben sie gefragt, ob das nicht zu langweilig ist für sie.","Ona bunun sıkıcı olup olmadığını sorduk."],
+      ["Aber sie hat gesagt, dass sie sich ganz bewusst für diese Tätigkeit entschieden hat, weil sie damit genug Geld für ihre Reisen verdient.","Ama bu işi bilinçli olarak seçtiğini, çünkü seyahatleri için yeterli para kazandığını söyledi."],
+      ["Sie ist schon auf allen Kontinenten unterwegs gewesen.","Zaten tüm kıtaları gezmiş."],
+      ["Auch Arne hat sich ganz anders entwickelt, als wir erwartet haben.","Arne de beklediğimizden tamamen farklı gelişti."],
+      ["Er hat früher immer die beste Mathearbeit geschrieben und hat ohne langes Nachdenken auch die schwierigsten Fragen zu Physik und Chemie beantwortet.","Eskiden hep en iyi matematik sınavını yazardı ve uzun düşünmeden fizik ve kimyanın en zor sorularını bile cevaplardı."],
+      ["Alle haben damals gedacht, dass er Professor für Mathematik oder Physik wird.","O zamanlar hepimiz onun matematik ya da fizik profesörü olacağını düşünmüştük."],
+      ["Er hat auch angefangen, Mathematik zu studieren, aber schon nach dem Bachelor – den er mit der Note 1,0 abgeschlossen hat – hat er sich gelangweilt.","Matematik okumaya da başladı ama 1,0 notuyla bitirdiği lisanstan sonra sıkılmıştı."],
+      ["Er hat eine nette Frau kennengelernt, sie haben geheiratet und bis jetzt schon 5 Kinder bekommen.","Hoş bir kadınla tanıştı, evlendiler ve şimdiye kadar 5 çocukları oldu."],
+      ["Jetzt geht seine Frau arbeiten und er passt auf die Kinder auf.","Şimdi eşi çalışmaya gidiyor, o çocuklara bakıyor."]
+    ]
+  },
+  {
+    id: "p1-smartphone",
+    title: "Partnerseite 1: Smartphone",
+    emoji: "📱",
+    color: "#AE3EC9",
+    teaser: "Fehlerkorrektur, Kapitel 1-4",
+    cards: [
+      ["Mit großem Interesse habe ich Ihren Artikel im Internet über die ständige Erreichbarkeit per Smartphone gelesen.","Akıllı telefonla sürekli ulaşılabilir olma hakkındaki internet makalenizi büyük ilgiyle okudum."],
+      ["Ich stimme Ihnen zu, dass es in der heutigen Zeit schwierig ist, ohne Handy zu leben.","Günümüzde telefonsuz yaşamanın zor olduğu konusunda size katılıyorum."],
+      ["Fast jeder hat mittlerweile ein Handy,","Artık neredeyse herkesin bir telefonu var,"],
+      ["und die meisten sozialen Kontakte sind ohne Smartphone nicht mehr denkbar.","ve sosyal bağlantıların çoğu akıllı telefonsuz artık düşünülemez."],
+      ["Man schickt sich Nachrichten oder Fotos, man verabredet sich oder man kann auch kurzfristig eine Verabredung absagen oder verschieben.","İnsanlar mesaj ya da fotoğraf gönderir, buluşma ayarlar ya da son anda bir randevuyu iptal edebilir ya da erteleyebilir."],
+      ["Man kann sich jederzeit über das aktuelle Geschehen informieren,","İnsan her an güncel olaylar hakkında bilgi edinebilir,"],
+      ["und man kann interessante Informationen mit seinen Freunden und Bekannten teilen.","ve ilginç bilgileri arkadaşları ve tanıdıklarıyla paylaşabilir."],
+      ["Natürlich macht man Fotos, die man sofort verschicken kann.","Elbette hemen gönderilebilecek fotoğraflar çekilir."],
+      ["Man hört Musik oder sieht Filme.","Müzik dinlenir ya da film izlenir."],
+      ["Die Möglichkeiten, die ein Smartphone bietet, haben sich in den letzten Jahren enorm erweitert.","Bir akıllı telefonun sunduğu olanaklar son yıllarda muazzam şekilde genişledi."],
+      ["Ich finde, sie haben das Leben interessant und leichter gemacht.","Bence hayatı daha ilginç ve kolay hale getirdiler."],
+      ["Auf der anderen Seite soll man auch die negativen Auswirkungen der ständigen Erreichbarkeit per Smartphone betrachten.","Öte yandan sürekli ulaşılabilir olmanın olumsuz etkileri de göz önünde bulundurulmalı."],
+      ["Die modernen Menschen werden schon unruhig, wenn sie ihr Smartphone einmal zwei Stunden ausgeschaltet bei sich tragen.","Modern insanlar telefonlarını sadece iki saatliğine kapalı taşıdıklarında bile huzursuzlanıyor."],
+      ["Einen ganzen Urlaub ohne Smartphone können sie sich meist gar nicht mehr vorstellen.","Akıllı telefonsuz koca bir tatili artık genelde hayal bile edemiyorlar."],
+      ["Sie sind von ihrem Smartphone abhängig geworden.","Akıllı telefonlarına bağımlı hale geldiler."],
+      ["Das kann zu Problemen führen,","Bu sorunlara yol açabilir,"],
+      ["wenn man konzentriert arbeiten muss, ist es störend,","konsantre çalışmak gerektiğinde rahatsız edici oluyor,"],
+      ["wenn man das Smartphone neben sich liegen hat.","telefon yanı başında dururken."]
+    ]
+  },
+  {
+    id: "k5-nom-akk-dat",
+    title: "K5: Nom/Akk/Dativ-Verben",
+    emoji: "🎯",
+    color: "#1971C2",
+    teaser: "Verbtypen + logische Sätze",
+    cards: [
+      ["Nur Subjekt: weinen, wachsen, hören.","Sadece özne alan fiiller: ağlamak, büyümek, duymak."],
+      ["Subjekt + Akkusativ: lesen, sehen, bestellen, kaufen, finden, wissen.","Özne + Akkusativ alan fiiller: okumak, görmek, sipariş etmek, satın almak, bulmak, bilmek."],
+      ["Subjekt + Dativ + Akkusativ: leihen, verkaufen, geben, vorlesen, bezahlen.","Özne + Dativ + Akkusativ alan fiiller: ödünç vermek, satmak, vermek, okuyup anlatmak, ödemek."],
+      ["Die Nachbarin empfiehlt einer Freundin das Restaurant.","Komşu kadın bir arkadaşına restoranı öneriyor."],
+      ["Mein Bruder kocht seinem Freund einen Teller Nudeln.","Kardeşim arkadaşına bir tabak makarna pişiriyor."],
+      ["Der Verkäufer leiht den Freunden das Buch.","Satıcı arkadaşlara kitabı ödünç veriyor."],
+      ["Der Studierende empfiehlt einem Freund die Pizza.","Öğrenci bir arkadaşına pizzayı öneriyor."],
+      ["Die Nachbarin kauft einer Freundin die Pizza.","Komşu kadın bir arkadaşına pizzayı alıyor."],
+      ["Ich leihe meinem Freund ein Buch. (logisch)","Arkadaşıma bir kitap ödünç veriyorum. (mantıklı)"],
+      ["Ich backe meinem Nachbarn einen Kuchen. (logisch)","Komşuma bir kek pişiriyorum. (mantıklı)"],
+      ["Ich verkaufe meinem Nachbarn mein Auto. (logisch)","Komşuma arabamı satıyorum. (mantıklı)"],
+      ["Ich vermiete den Touristen meine Wohnung. (logisch)","Turistlere dairemi kiralıyorum. (mantıklı)"]
+    ]
+  },
+  {
+    id: "k5-dativverben",
+    title: "K5: Dativverben",
+    emoji: "🤝",
+    color: "#1864AB",
+    teaser: "10 Dativverben + Beispiele",
+    cards: [
+      ["antworten = cevap vermek","Du antwortest mir."],
+      ["danken = teşekkür etmek","Ich danke dir."],
+      ["fehlen = eksik olmak, özlemek","Du fehlst mir."],
+      ["folgen = takip etmek","Er folgt mir."],
+      ["glauben = inanmak","Ich glaube dir."],
+      ["gehören = ait olmak","Das Auto gehört dem Chef."],
+      ["helfen = yardım etmek","Der Lehrer hilft den Kindern."],
+      ["passen = uymak","Das Kleid passt der Dame."],
+      ["vertrauen = güvenmek","Er vertraut seiner Chefin nicht ganz."],
+      ["zuhören = kulak vermek, dinlemek","Die Kinder hören den Leuten zu."],
+      ["gefallen = hoşuna gitmek","Der Junge gefällt dem Mädchen."],
+      ["Ich frage dich. (Akkusativ)","Sana soruyorum."],
+      ["Du antwortest mir. (Dativ)","Bana cevap veriyorsun."],
+      ["„Dativverben“: gefallen, passen, helfen, zuhören, gehören, fehlen.","Dativ fiilleri: hoşuna gitmek, uymak, yardım etmek, dinlemek, ait olmak, eksik olmak."],
+      ["„Normale“ Verben (Nominativ + Akkusativ): mögen, besitzen, unterstützen, vermissen, hören.","Normal fiiller (Nominativ+Akkusativ): sevmek, sahip olmak, desteklemek, özlemek, duymak."]
+    ]
+  },
+  {
+    id: "k5-artikel-fragen",
+    title: "K5: Artikel & W-Fragen",
+    emoji: "❓",
+    color: "#155E9E",
+    teaser: "Vatertag-Text + Fragen bilden",
+    cards: [
+      ["Heute ist ein besonderer Tag.","Bugün özel bir gün."],
+      ["Der Tag heißt eigentlich „Himmelfahrt“, aber seit ein paar Jahrzehnten nennen die Leute den Tag „Vatertag“.","Bu güne aslında „Göğe Yükseliş“ deniyor ama birkaç on yıldır insanlar bu güne „Babalar Günü“ diyor."],
+      ["Dann gratuliert man den Vätern zum Vatertag und vielleicht kaufen die Kinder ihrem Vater ein Geschenk.","O zaman babalara Babalar Günü kutlanır ve belki çocuklar babalarına bir hediye alır."],
+      ["Einigen Leuten gefällt der Vatertag überhaupt nicht.","Bazı insanlar Babalar Günü'nü hiç sevmez."],
+      ["Das hat den Grund, dass in Deutschland immer noch meistens die Mütter die Kinder erziehen, und dass die Väter, die den Vatertag feiern, meistens gar keine Kinder haben.","Bunun nedeni, Almanya'da hâlâ genellikle annelerin çocukları büyütmesi ve Babalar Günü'nü kutlayan babaların genellikle hiç çocuğu olmamasıdır."],
+      ["Die feiernden Väter benutzen den Tag hauptsächlich dazu, sich zu betrinken.","Kutlama yapan babalar bu günü esasen sarhoş olmak için kullanır."],
+      ["Aber auch der Muttertag gefällt vor allem den Blumengeschäften, denn sie machen an dem Tag den größten Gewinn.","Ama Anneler Günü de özellikle çiçekçilerin hoşuna gider çünkü o gün en büyük kârı onlar yapar."],
+      ["Der Junge gefällt dem Mädchen. → Wem gefällt der Junge?","Erkek çocuk kızın hoşuna gidiyor. → Kızın hoşuna giden kim?"],
+      ["Das Mädchen mag den Jungen. → Wen mag das Mädchen?","Kız erkek çocuktan hoşlanıyor. → Kız kimden hoşlanıyor?"],
+      ["Der Junge ist sein Freund. → Wer ist sein Freund?","Erkek çocuk onun arkadaşı. → Onun arkadaşı kim?"],
+      ["Der Lehrer hilft den Kindern. → Wem hilft der Lehrer?","Öğretmen çocuklara yardım ediyor. → Öğretmen kime yardım ediyor?"],
+      ["Die Lehrer unterstützen die Kinder. → Wen unterstützen die Lehrer?","Öğretmenler çocukları destekliyor. → Öğretmenler kimi destekliyor?"],
+      ["Der Roboter putzt die Wohnung. → Was putzt der Roboter?","Robot daireyi temizliyor. → Robot neyi temizliyor?"],
+      ["Der Beamte liebt seine Arbeit. → Was liebt der Beamte?","Memur işini seviyor. → Memur neyi seviyor?"],
+      ["Die Kinder hören den Leuten zu. → Wem hören die Kinder zu?","Çocuklar insanları dinliyor. → Çocuklar kimi dinliyor?"],
+      ["Die Kinder hören die Klingel. → Was hören die Kinder?","Çocuklar zili duyuyor. → Çocuklar neyi duyuyor?"]
+    ]
+  },
+  {
+    id: "k5-antworten-nudeln",
+    title: "K5: Antworten & Nudeln",
+    emoji: "🍝",
+    color: "#0B7285",
+    teaser: "Übung 6-10, Nudeln weltweit",
+    cards: [
+      ["Wem schenken Sie die Blumen? – Ich schenke die Blumen meiner Mutter.","Çiçekleri kime hediye ediyorsunuz? – Çiçekleri anneme hediye ediyorum."],
+      ["Was schenken Sie dem Vater? – Ich schenke meinem Vater den Wein.","Babanıza ne hediye ediyorsunuz? – Babama şarabı hediye ediyorum."],
+      ["Wem gratulieren Sie? – Ich gratuliere dem Vater.","Kimi tebrik ediyorsunuz? – Babayı tebrik ediyorum."],
+      ["Wer hilft Ihnen oft? – Mein Freund hilft mir oft.","Size sık sık kim yardım ediyor? – Arkadaşım bana sık sık yardım ediyor."],
+      ["Wem helfen Sie oft? – Ich helfe oft meinem Freund.","Sık sık kime yardım ediyorsunuz? – Sık sık arkadaşıma yardım ediyorum."],
+      ["Wem kochen Sie das Essen? – Ich koche das Essen den Kindern.","Yemeği kime pişiriyorsunuz? – Yemeği çocuklara pişiriyorum."],
+      ["Was backen Sie Ihren Freunden? – Ich backe meinen Freunden den Kuchen.","Arkadaşlarınıza ne pişiriyorsunuz (fırında)? – Arkadaşlarıma keki pişiriyorum."],
+      ["Wen haben Sie eingeladen? – Ich habe meinen Bruder eingeladen.","Kimi davet ettiniz? – Kardeşimi davet ettim."],
+      ["Ich gratuliere meinem Freund.","Arkadaşımı kutluyorum."],
+      ["Er vertraut seiner Chefin nicht ganz.","Patronuna (kadın) tam güvenmiyor."],
+      ["Wir besitzen einen Mercedes Benz.","Bir Mercedes Benz'e sahibiz."],
+      ["Alle möchten natürlich ihre Kinder unterstützen.","Herkes elbette çocuklarını desteklemek istiyor."],
+      ["Ich gebe mir Mühe, meinem Schüler zu helfen.","Öğrencime yardım etmek için elimden geleni yapıyorum."],
+      ["Nudeln sind inzwischen wahrscheinlich fast weltweit ein sehr beliebtes Essen.","Makarna artık muhtemelen neredeyse dünya çapında çok sevilen bir yiyecek."],
+      ["Eigentlich schmecken Nudeln allen Kindern.","Aslında makarna tüm çocukların hoşuna gider."],
+      ["Aber auch Studenten lieben Nudeln, denn kaum ein anderes Essen kann man so schnell zubereiten!","Ama öğrenciler de makarnayı sever, çünkü başka hiçbir yemek bu kadar hızlı hazırlanamaz!"],
+      ["Und Nudeln sind ein billiges Gericht.","Ve makarna ucuz bir yemektir."],
+      ["Man kann täglich eine andere Soße dazu kochen, und schon hat man eine neue Variation.","Her gün farklı bir sos pişirebilirsiniz ve hemen yeni bir çeşit ortaya çıkar."],
+      ["Es ist natürlich auch bequem, dass man viele fertig gekochte Soßen findet.","Birçok hazır pişmiş sos bulunması da elbette pratik."],
+      ["Außerdem bietet jeder Supermarkt verschiedene Nudelformen an.","Ayrıca her süpermarket farklı makarna şekilleri sunar."],
+      ["In Italien empfehlen Restaurants ihren Gästen Pasta meistens als Vorspeise, in Deutschland sind Nudeln meistens ein Hauptgericht.","İtalya'da restoranlar genellikle makarnayı ön yemek olarak önerir, Almanya'da ise makarna genellikle ana yemektir."],
+      ["Es gibt wohl so viele Nudel-Varianten wie es Länder gibt.","Muhtemelen ülke sayısı kadar çok makarna çeşidi var."],
+      ["Leider bin ich kein guter Nudelkoch.","Maalesef iyi bir makarna aşçısı değilim."],
+      ["Mir gelingen die Nudeln meistens nicht. Sie werden entweder hart oder matschig.","Makarnam genelde iyi olmuyor. Ya sert ya da lapa gibi oluyor."],
+      ["Da ist ein Audi. Ich kaufe einen Audi. Ich kaufe meiner Tochter einen Audi.","İşte bir Audi. Bir Audi satın alıyorum. Kızıma bir Audi satın alıyorum."],
+      ["Das liegt ein Buch. Ich leihe ein Buch. Ich leihe dir ein Buch.","Orada bir kitap duruyor. Bir kitap ödünç alıyorum. Sana bir kitap ödünç veriyorum."],
+      ["Hier ist ein Rat von mir. Ich gebe einen Rat. Ich gebe meinem Sohn einen Rat.","İşte benden bir tavsiye. Bir tavsiye veriyorum. Oğluma bir tavsiye veriyorum."],
+      ["Sieh mal, meine Zähne. Ich zeige meine Zähne. Ich zeige dem Zahnarzt meine Zähne.","Bak, dişlerim. Dişlerimi gösteriyorum. Dişçiye dişlerimi gösteriyorum."],
+      ["Ein Blumenstrauß! Ich verschenke einen Blumenstrauß. Ich schenke meiner Frau einen Blumenstrauß.","Bir çiçek buketi! Bir çiçek buketi hediye ediyorum. Eşime bir çiçek buketi hediye ediyorum."]
+    ]
+  },
+  {
+    id: "k6-artikel-tabelle",
+    title: "K6: Artikel-Tabelle & Verkehr",
+    emoji: "🚦",
+    color: "#5F3DC4",
+    teaser: "der/ein/kein-Deklination",
+    cards: [
+      ["der/ein/kein-Deklination — Nominativ: der/ein/kein, das/ein/kein, die/eine/keine, die/–/keine (Pl.)","der/ein/kein çekimi — Nominativ: eril/nötr/dişil/çoğul biçimleri"],
+      ["Akkusativ: den/einen/keinen, das/ein/kein, die/eine/keine, die/–/keine (Pl.)","Akkusativ: eril/nötr/dişil/çoğul biçimleri"],
+      ["Dativ: dem/einem/keinem, dem/einem/keinem, der/einer/keiner, den/–/keinen (Pl.)","Dativ: eril/nötr/dişil/çoğul biçimleri"],
+      ["Genitiv: des/eines/keines, des/eines/keines, der/einer/keiner, der/–/keiner (Pl.)","Genitiv: eril/nötr/dişil/çoğul biçimleri"],
+      ["In einer großen Stadt gibt es die meisten Verkehrsprobleme.","Büyük bir şehirde en çok trafik sorunu olur."],
+      ["Die Straßen der Großstädte sind meist voll.","Büyükşehirlerin caddeleri genellikle doludur."],
+      ["Mit dem Fahrrad ist man oft schneller, aber es ist gefährlich, weil es auf den meisten Straßen keinen speziellen Fahrradweg gibt.","Bisikletle çoğu zaman daha hızlı gidilir, ama tehlikelidir çünkü çoğu caddede özel bisiklet yolu yoktur."],
+      ["Mit öffentlichen Verkehrsmitteln kommt man schnell an das Ziel.","Toplu taşımayla hedefe hızlı ulaşılır."],
+      ["Tagsüber hat man keine Probleme, aber nachts muss man lange auf den Bus oder die U-Bahn warten.","Gündüz sorun olmaz ama gece otobüsü veya metroyu uzun süre beklemek gerekir."]
+    ]
+  },
+  {
+    id: "k6-einbruch",
+    title: "K6: Ein Einbruch & Fehler",
+    emoji: "🕵️",
+    color: "#5C3AC7",
+    teaser: "Indefinit/negativ/definit + Fehlersätze",
+    cards: [
+      ["Was ist gestern im Nachbarhaus passiert? – Ein Einbruch.","Dün komşu evde ne oldu? – Bir hırsızlık."],
+      ["Wie ist der Dieb ins Haus gekommen? – Durch ein Kellerfenster.","Hırsız eve nasıl girdi? – Bir bodrum penceresinden."],
+      ["Wie hat er das Fenster geöffnet? – Mit einem Hammer.","Pencereyi nasıl açtı? – Bir çekiçle."],
+      ["Was für ein Haus ist das? – Das Haus einer sehr bekannten Schauspielerin.","Bu nasıl bir ev? – Çok tanınmış bir oyuncunun evi."],
+      ["Hat es Zeugen des Diebstahls gegeben? – Nein, es hat keine Zeugen gegeben.","Hırsızlığın tanığı var mıydı? – Hayır, hiç tanık yoktu."],
+      ["Hat es früher schon mal einen Einbruch dort gegeben? – Nein, es hat noch keinen Einbruch gegeben.","Daha önce orada hiç hırsızlık olmuş muydu? – Hayır, hiç olmamıştı."],
+      ["Waren die Diebe noch in einem anderen Haus? – Nein, sie sind zu keinem anderen Haus gegangen.","Hırsızlar başka bir eve de mi gitti? – Hayır, başka hiçbir eve gitmediler."],
+      ["Haben die Nachbarn Lärm gehört oder Licht gesehen? – Nein, die Nachbarn haben keinen Lärm gehört und kein Licht gesehen.","Komşular gürültü duydu ya da ışık gördü mü? – Hayır, ne gürültü duydu ne de ışık gördüler."],
+      ["Wer hat den Dieb gefangen und zwei Stunden lang festgehalten? – Der Hund.","Hırsızı kim yakalayıp iki saat tuttu? – Köpek."],
+      ["Wem hat die Schauspielerin von der Heldentat ihres Hundes berichtet? – Den Journalisten.","Oyuncu köpeğinin kahramanlığını kime anlattı? – Gazetecilere."],
+      ["Was wollte der Dieb stehlen? – Den Schmuck.","Hırsız ne çalmak istedi? – Mücevherleri."],
+      ["Was ist der Schauspielerin nicht eingefallen? – Die Telefonnummer der Polizei.","Oyuncunun aklına ne gelmedi? – Polisin telefon numarası."],
+      ["Heute habe ich ein tolles Auto gesehen.","Bugün harika bir araba gördüm."],
+      ["Es war kein besonders teures Auto, aber es sah cool aus.","Özellikle pahalı bir araba değildi ama havalı görünüyordu."],
+      ["Gestern war ich im Kino in einem interessanten Film.","Dün sinemada ilginç bir filmdeydim."],
+      ["Ich bin mit der U-Bahn in die Stadt gefahren.","Metroyla şehre gittim."],
+      ["Der Stau war für mich kein Problem.","Trafik sıkışıklığı benim için sorun değildi."]
+    ]
+  },
+  {
+    id: "k6-possessiv",
+    title: "K6: Possessivartikel & Urlaub",
+    emoji: "🏖️",
+    color: "#7048E8",
+    teaser: "mein/dein/sein + Urlaubs-Dialog",
+    cards: [
+      ["Sie hat heute einen Termin bei ihrer Chefin.","Bugün patroniyle (kadın) randevusu var."],
+      ["Ihre Chefin möchte sich über den Stand ihres Projekts informieren lassen.","Patronu projesinin durumu hakkında bilgi almak istiyor."],
+      ["Mittags war sie mit ihren Kollegen beim Essen.","Öğlen meslektaşlarıyla yemekteydi."],
+      ["Wie geht es euren Kindern? Fahrt ihr in eurem Urlaub wieder auf euren Campingplatz in Südfrankreich? Oder ist euer Sohn noch im Ausland?","Çocuklarınız nasıl? Tatilinizde yine Güney Fransa'daki kamp alanınıza mı gidiyorsunuz? Yoksa oğlunuz hâlâ yurt dışında mı?"],
+      ["Wir wollen unseren Urlaub wieder dort verbringen, unser Sohn weiß noch nicht, ob er mitkommen kann.","Tatilimizi yine orada geçirmek istiyoruz, oğlumuz gelip gelemeyeceğini henüz bilmiyor."],
+      ["Habt ihr euren Urlaub schon in die Urlaubsliste eingetragen?","İzninizi izin listesine yazdırdınız mı?"],
+      ["Nein, ich kann meinen Urlaub noch nicht eintragen. Ich warte noch auf meine Frau. In unserer Firma kommt die Urlaubsliste erst im Januar.","Hayır, iznimi henüz kaydettiremem. Eşimi bekliyorum. Şirketimizde izin listesi ancak Ocak'ta geliyor."],
+      ["Erst dann können wir unseren Urlaub planen. Und du, weißt du schon, wann du deinen Urlaub nimmst?","Ancak o zaman iznimizi planlayabiliriz. Peki sen, iznini ne zaman alacağını biliyor musun?"],
+      ["Ja, wir haben schon lange geplant. Ich fahre mit meiner Freundin eine Woche nach Rom.","Evet, uzun zamandır planlıyoruz. Kız arkadaşımla bir hafta Roma'ya gidiyorum."],
+      ["Mein Mann möchte sich seinen Traum verwirklichen und mit dem Fahrrad über die Alpen fahren. Das macht er mit seinen zwei Brüdern zusammen.","Eşim hayalini gerçekleştirmek istiyor, bisikletle Alpler'i geçmek istiyor. Bunu iki kardeşiyle birlikte yapıyor."],
+      ["Ihr macht doch immer zwei Wochen Urlaub am Strand. Fällt euer Strandurlaub diesmal aus?","Siz hep iki hafta sahilde tatil yaparsınız. Bu sefer sahil tatiliniz iptal mi oluyor?"],
+      ["Nein, unseren Strandurlaub machen wir dieses Jahr im November, auf Sri Lanka.","Hayır, sahil tatilimizi bu yıl Kasım'da, Sri Lanka'da yapıyoruz."],
+      ["Meine Kollegin kommt oft zu spät, weil ihr Zug oft Verspätung hat.","Meslektaşım sık sık geç kalıyor çünkü treni sık gecikiyor."],
+      ["Der Kunde hat sich beschwert, seine Ware ist drei Tage zu spät angekommen.","Müşteri şikayet etti, malı üç gün geç geldi."],
+      ["Meine Kollegen haben leider vergessen, ihre Informationen weiterzuleiten.","Meslektaşlarım maalesef bilgilerini iletmeyi unuttu."],
+      ["Es ist ein Problem für die anderen, wenn man seine Informationen nicht weitergibt.","İnsan kendi bilgisini paylaşmazsa diğerleri için sorun olur."]
+    ]
+  },
+  {
+    id: "k6-interrog-demonstr",
+    title: "K6: Welch- & dies- + Bewerbung",
+    emoji: "✉️",
+    color: "#862E9C",
+    teaser: "Interrogativ/Demonstrativ + Brief",
+    cards: [
+      ["Hier sind zwei Modegeschäfte. Welches Geschäft kannst du mir empfehlen? – Ich finde dieses hier besser, in dem anderen sind die Verkäufer unfreundlich.","İşte iki moda mağazası. Hangi mağazayı önerirsin? – Bence buradaki daha iyi, diğerinde satıcılar kaba."],
+      ["Welche Strümpfe sind aus Wolle, welche aus Kunstfasern? – Diese blauen Strümpfe sind aus reiner Wolle, diese weißen sind aus Polyester.","Hangi çoraplar yünden, hangileri sentetikten? – Bu mavi çoraplar saf yünden, bu beyazlar polyesterden."],
+      ["Mit welcher Karte kann ich hier bezahlen? – Mit dieser Karte nicht, nur mit einer Kreditkarte.","Burada hangi kartla ödeyebilirim? – Bu kartla değil, sadece kredi kartıyla."],
+      ["Mit welchem Bus fährst du heute? – Ich weiß noch nicht. Welchen Bus nimmst du?","Bugün hangi otobüsle gidiyorsun? – Henüz bilmiyorum. Sen hangisini alıyorsun?"],
+      ["Ich finde diesen Wein sehr gut. Welcher schmeckt dir am besten?","Bu şarabı çok beğeniyorum. Sana en çok hangisi güzel geliyor?"],
+      ["In welcher Woche willst du Urlaub nehmen? – Ich weiß es noch nicht, aber der Chef sagt, wir sollen den Urlaub in dieser Woche festlegen.","Hangi hafta izin almak istiyorsun? – Henüz bilmiyorum ama patron bu hafta belirlememiz gerektiğini söylüyor."],
+      ["Kommst du zum Meeting? – Welches Meeting meinst du, das heute Mittag oder das am Nachmittag?","Toplantıya geliyor musun? – Hangi toplantıyı kastediyorsun, öğlen olanı mı öğleden sonrakini mi?"],
+      ["Der Kopierer funktioniert schon wieder nicht. – Kein Problem, du musst nur dieses Fach hier öffnen und diesen Hebel drehen, dann kommt das gestaute Papier raus.","Fotokopi makinesi yine çalışmıyor. – Sorun değil, şu bölmeyi açıp şu kolu çevirmen yeterli, sıkışan kağıt çıkar."],
+      ["Sehr geehrter Herr Schönborn, vor zwei Jahren habe ich in Ihrer Firma ein viermonatiges Praktikum gemacht, das mir sehr gut gefallen hat.","Sayın Bay Schönborn, iki yıl önce firmanızda dört aylık bir staj yaptım ve çok memnun kalmıştım."],
+      ["Insbesondere die Arbeit in dem internationalen Team, die kollegiale Zusammenarbeit und die effektive Organisation des Projekts haben mich für mein weiteres Studium bereichert.","Özellikle uluslararası ekipteki çalışma, meslektaşça iş birliği ve projenin etkili organizasyonu, ilerideki eğitimim için beni zenginleştirdi."],
+      ["Sie hatten mich damals aufgefordert, mich nach dem Abschluss meines Studiums auf eine Stelle bei Ihnen zu bewerben.","O zaman bana, eğitimimi bitirdikten sonra sizde bir pozisyona başvurmamı önermiştiniz."],
+      ["Jetzt habe ich mein Informatikstudium mit dem Schwerpunkt Hardwaresysteme mit der Note 1,2 abgeschlossen.","Şimdi bilgisayar mühendisliği eğitimimi donanım sistemleri alanında 1,2 notuyla tamamladım."],
+      ["Und möchte mich bei Ihnen auf die Stelle als Hardwareentwickler, die auf Ihrer Homepage ausgeschrieben ist, bewerben.","Ve web sitenizde ilan edilen donanım geliştirici pozisyonuna başvurmak istiyorum."],
+      ["Auf einer solchen Stelle kann ich auch die Kenntnisse und Erfahrungen aus meiner Bachelor-Arbeit anwenden.","Böyle bir pozisyonda lisans tezimden edindiğim bilgi ve deneyimleri de uygulayabilirim."],
+      ["Über eine Einladung zu einem Vorstellungsgespräch würde ich mich sehr freuen. Mit freundlichen Grüßen, Layla Badri.","Bir mülakata davet edilirsem çok memnun olurum. Saygılarımla, Layla Badri."]
+    ]
+  },
+  {
+    id: "k2-hauptsatz",
+    title: "K2: Wortposition Hauptsatz",
+    emoji: "📐",
+    color: "#FF8C69",
+    teaser: "Regel + Position 1 üben",
+    cards: [
+      ["Regel: Im Hauptsatz steht das Verb auf Position 2. Das Subjekt steht davor oder danach.","Ana cümlede fiil 2. konumdadır. Özne fiilden önce ya da sonra gelir."],
+      ["Auch der Nebensatz kann auf Position 1 stehen, dann beginnt der Hauptsatz mit dem Verb.","Yan cümle de 1. konumda olabilir, o zaman ana cümle fiille başlar."],
+      ["Den 8-Stunden-Arbeitstag gibt es in Deutschland seit ungefähr 100 Jahren.","Almanya'da 8 saatlik iş günü yaklaşık 100 yıldır var."],
+      ["In den 60er Jahren wurde die 5-Tage-Woche eingeführt.","60'lı yıllarda 5 günlük hafta getirildi."],
+      ["Während die Arbeitszeit bis in die 70er Jahre noch ganz festgelegt war, haben wir in vielen Büros heute Gleitzeit.","70'li yıllara kadar çalışma saatleri tamamen sabitken, bugün birçok ofiste esnek çalışma saati var."],
+      ["Bei Gleitzeit kann man den Arbeitsbeginn relativ frei wählen.","Esnek çalışma saatinde işe başlama saatini nispeten özgürce seçebilirsiniz."],
+      ["Sogar einige Schulen praktizieren heutzutage in den unteren Klassen einen flexiblen Unterrichtsbeginn.","Günümüzde bazı okullar bile alt sınıflarda esnek ders başlangıcı uyguluyor."],
+      ["Dagegen müssen die Mitarbeiter in Krankenhäusern und auch in anderen Betrieben in Schichtarbeit arbeiten.","Buna karşılık hastanelerde ve diğer işletmelerde çalışanlar vardiyalı çalışmak zorunda."],
+      ["Die Vertrauensarbeitszeit, bei der nur die Erledigung eines Projekts die Arbeitszeit bestimmt, ist ein interessantes Modell.","Sadece bir projenin tamamlanmasının çalışma süresini belirlediği güven esaslı çalışma saati ilginç bir modeldir."],
+      ["Auf dem Vertrauen des Arbeitgebers basiert auch die Arbeit im Homeoffice.","Evden çalışma da işverenin güvenine dayanır."],
+      ["Obwohl man 1990 die Arbeitszeit in vielen Branchen auf 35 Stunden pro Woche reduziert hatte, müssen die meisten Angestellten heute wieder 38-40 Stunden pro Woche arbeiten.","1990'da birçok sektörde çalışma süresi haftada 35 saate düşürülmüş olmasına rağmen, bugün çoğu çalışan yeniden haftada 38-40 saat çalışmak zorunda."]
+    ]
+  },
+  {
+    id: "k2-satzbruecke",
+    title: "K2: Satzbrücke & Feiern",
+    emoji: "🌉",
+    color: "#E8590C",
+    teaser: "Verbformen + neue Chefin + Feiern",
+    cards: [
+      ["Ich lade heute meine Kollegen ein. (trennbares Verb)","Bugün meslektaşlarımı davet ediyorum."],
+      ["Ich muss leider jetzt noch Hausaufgaben machen. (Modalverb + Infinitiv)","Maalesef şimdi hâlâ ödev yapmam gerekiyor."],
+      ["Ich habe gestern auch keine Hausaufgaben gemacht. (Perfekt)","Dün de hiç ödev yapmadım."],
+      ["Ich gehe viel lieber spazieren. (Verb + Verb)","Yürüyüşe gitmeyi çok daha çok tercih ederim."],
+      ["Ich mache nie gerne Hausaufgaben. (Verb-Nomen-Kombination)","Ödev yapmayı hiç sevmem."],
+      ["Ich bin beim Lernen eigentlich immer müde. (sein + Adjektiv)","Ders çalışırken aslında hep yorgunum."],
+      ["Ich würde gerne bald Examen machen. (Konjunktiv 2)","Yakında sınavımı yapmak isterdim."],
+      ["Das Buch wird jetzt für heute zugemacht. (Passiv)","Kitap bugünlük şimdi kapatılıyor."],
+      ["Ich werde ab morgen jeden Tag viel lernen. (Futur)","Yarından itibaren her gün çok çalışacağım."],
+      ["Ich hatte bisher immer Glück gehabt. (Plusquamperfekt)","Şimdiye kadar hep şanslıydım."],
+      ["Morgen findet die Begrüßung der neuen Abteilungsleiterin statt.","Yarın yeni bölüm müdürünün karşılama töreni yapılacak."],
+      ["Zuerst wird sie uns vom Firmenchef vorgestellt.","Önce şirket müdürü tarafından bize tanıtılacak."],
+      ["Danach werden Snacks und auch alkoholische Getränke serviert.","Sonra atıştırmalıklar ve alkollü içecekler servis edilecek."],
+      ["Bei ihrem Einstand trinken wir also während der Arbeitszeit Sekt.","Onun işe başlama kutlamasında mesai saatinde köpüklü şarap içiyoruz."],
+      ["Sie möchte gleich zu Beginn alle Mitarbeiter/innen kennenlernen.","Başlangıçta hemen tüm çalışanları tanımak istiyor."],
+      ["Wir haben natürlich schon vorher Informationen über sie gesammelt.","Elbette önceden onun hakkında bilgi topladık."],
+      ["Zu der ehemaligen Chefin hatten viele Kollegen und Kolleginnen großes Vertrauen gehabt.","Eski müdüreye birçok meslektaş büyük güven duymuştu."],
+      ["Der Anfang ist deshalb wahrscheinlich schwer für die neue Chefin.","Bu yüzden başlangıç yeni müdüre için muhtemelen zor."],
+      ["Am besten lassen wir die neue Chefin zuerst mal in Ruhe anfangen.","En iyisi yeni müdürün önce sakin bir şekilde başlamasına izin verelim."],
+      ["Wahrscheinlich werden sich dann alle schnell an sie gewöhnen.","Muhtemelen herkes ona hızla alışacak."],
+      ["Ich möchte mindestens einmal pro Jahr ein großes Fest feiern.","Yılda en az bir kez büyük bir parti vermek istiyorum."],
+      ["Dann lade ich alle meine Freunde ein.","O zaman tüm arkadaşlarımı davet ediyorum."],
+      ["Nur einmal habe ich in einem Restaurant gefeiert.","Sadece bir kez bir restoranda kutladım."],
+      ["Ich finde schöner aber immer eine Feier zu Hause.","Ama evde bir kutlamayı her zaman daha güzel bulurum."],
+      ["Natürlich muss ich vorher einkaufen gehen.","Elbette önceden alışverişe gitmem gerekiyor."],
+      ["Mir macht die Organisation aber viel Spaß.","Organizasyon bana çok keyif veriyor."],
+      ["Auf manchen Feiern hat ein Freund Klavier gespielt.","Bazı partilerde bir arkadaşım piyano çaldı."],
+      ["Das war selbstverständlich wunderbar.","Bu tabii ki harikaydı."]
+    ]
+  },
+  {
+    id: "k2-nebensatz",
+    title: "K2: Nebensatz-Wortstellung",
+    emoji: "🔗",
+    color: "#D9480F",
+    teaser: "10 Konnektoren + Fehlersätze",
+    cards: [
+      ["Regel: Im Nebensatz steht das Verb am Ende. Das Subjekt steht direkt nach dem Konnektor.","Yan cümlede fiil sondadır. Özne bağlaçtan hemen sonra gelir."],
+      ["Seit ich an einem Sprachkurs teilnehme, hat sich mein Leben total verändert.","Bir dil kursuna katıldığımdan beri hayatım tamamen değişti."],
+      ["Bevor ich angefangen habe, musste ich zwar morgens früher aufstehen, aber ich musste abends keine Hausaufgaben machen.","Başlamadan önce sabahları daha erken kalkmam gerekiyordu ama akşamları ödev yapmam gerekmiyordu."],
+      ["Jetzt mache ich Übungen, während ich die Tagesschau im Fernsehen sehe.","Şimdi haberleri izlerken alıştırma yapıyorum."],
+      ["Als ich noch in die Schule ging, habe ich auch immer beim Fernsehen Hausaufgaben gemacht.","Hâlâ okula giderken de her zaman televizyon izlerken ödev yapardım."],
+      ["Ich bin sehr froh, obwohl der Kurs auch stressig ist.","Kurs stresli olmasına rağmen çok memnunum."],
+      ["Es ist aber sehr schön, dass ich im Kurs so viele neue Leute kennengelernt habe.","Ama kursta bu kadar çok yeni insan tanımış olmam çok güzel."],
+      ["Auch die Lehrer, bei denen wir Unterricht haben, sind sehr nett.","Ders aldığımız öğretmenler de çok nazik."],
+      ["Wir bleiben sicher in Kontakt, wenn der Kurs vorbei ist.","Kurs bittiğinde kesinlikle iletişimde kalacağız."],
+      ["Ich bin nämlich nicht sicher, ob ich einen zweiten Kurs bezahlen kann.","Çünkü ikinci bir kursu ödeyebilir miyim emin değilim."],
+      ["Ich spare schon Geld, damit das möglich ist.","Bunun mümkün olması için şimdiden para biriktiriyorum."]
+    ]
+  },
+  {
+    id: "k3-position",
+    title: "K3: Position & Online-Kauf",
+    emoji: "🛒",
+    color: "#12B886",
+    teaser: "Modalverben Satzposition",
+    cards: [
+      ["Wir möchten in eine größere Wohnung ziehen.","Daha büyük bir eve taşınmak istiyoruz."],
+      ["Unsere Freunde wollen uns beim Umzug helfen.","Arkadaşlarımız taşınmamızda bize yardım etmek istiyor."],
+      ["Wir müssen erst eine bezahlbare Wohnung finden.","Önce uygun fiyatlı bir daire bulmamız gerekiyor."],
+      ["Ich kann leider nur am Wochenende suchen.","Maalesef sadece hafta sonu arayabiliyorum."],
+      ["An meiner Arbeitsstelle darf ich nicht im Internet surfen.","İş yerimde internette gezinmeme izin verilmiyor."],
+      ["Die Supermärkte dürfen die neuen Trends nicht verpassen.","Süpermarketler yeni trendleri kaçırmamalı."],
+      ["Die Geschäfte müssen sich auf den Online-Handel einstellen.","Mağazalar çevrimiçi ticarete uyum sağlamak zorunda."],
+      ["Der Vorteil des Onlinekaufs ist, dass man einkaufen kann, ohne aus dem Haus zu gehen.","Çevrimiçi alışverişin avantajı, evden çıkmadan alışveriş yapabilmenizdir."],
+      ["Besonders für ältere Menschen kann das ein Vorteil sein.","Özellikle yaşlılar için bu bir avantaj olabilir."],
+      ["Allerdings können viele ältere Menschen nicht so gut mit dem Internet umgehen.","Ancak birçok yaşlı insan interneti pek iyi kullanamıyor."],
+      ["Einige Menschen wollen ihre Lebensmittel lieber in einem traditionellen Geschäft einkaufen.","Bazı insanlar gıdalarını geleneksel bir mağazadan almayı tercih ediyor."],
+      ["Viele Menschen wollen ein Produkt zu einem möglichst niedrigen Preis kaufen.","Birçok insan bir ürünü mümkün olduğunca düşük fiyata almak istiyor."],
+      ["Im Internet kann man Angebote finden, die sehr günstig sind.","İnternette çok uygun fiyatlı teklifler bulunabilir."],
+      ["Man darf aber nicht auf jedes Angebot eingehen.","Ama her teklife güvenilmemeli."],
+      ["Man muss unbedingt darauf achten, ob der Online-Händler vertrauenswürdig ist.","Çevrimiçi satıcının güvenilir olup olmadığına mutlaka dikkat edilmeli."]
+    ]
+  },
+  {
+    id: "k3-labor-moechten",
+    title: "K3: Sollen, Möchten, Labor",
+    emoji: "🧪",
+    color: "#0CA678",
+    teaser: "Unmögliches + Newsletter + Laborregeln",
+    cards: [
+      ["Meine Mutter sagt, ich soll mich mehr um den Haushalt kümmern.","Annem, eve daha çok bakmam gerektiğini söylüyor."],
+      ["Unser Arbeitgeber sagt, wir sollen mehr arbeiten.","Patronumuz daha çok çalışmamız gerektiğini söylüyor."],
+      ["Mein Sohn sagt, mein Mann soll mit ihm regelmäßig Tischtennis spielen.","Oğlum, eşimin onunla düzenli masa tenisi oynaması gerektiğini söylüyor."],
+      ["Meine Tochter sagt, mein Mann und ich sollen mehr Zeit für sie haben.","Kızım, eşim ve benim onun için daha çok zamanımız olması gerektiğini söylüyor."],
+      ["Unsere Freunde sagen, wir sollen mehr mit ihnen ausgehen.","Arkadaşlarımız, onlarla daha çok dışarı çıkmamız gerektiğini söylüyor."],
+      ["Was sollen wir tun?","Ne yapmalıyız?"],
+      ["Wenn Sie möchten, können Sie unseren kostenlosen Newsletter abonnieren.","İsterseniz ücretsiz bültenimize abone olabilirsiniz."],
+      ["Jeder, der möchte, kann an dem Wettbewerb teilnehmen.","İsteyen herkes yarışmaya katılabilir."],
+      ["Möchtest du ein Glas Wein oder lieber etwas ohne Alkohol?","Bir kadeh şarap mı yoksa alkolsüz bir şey mi istersin?"],
+      ["Ich möchte lieber etwas Nicht-Alkoholisches, ich muss noch arbeiten.","Alkolsüz bir şey tercih ederim, hâlâ çalışmam gerekiyor."],
+      ["Wer möchte in die Oper gehen? Wir haben Karten zu verschenken. – Wir möchten gerne, danke!","Operaya kim gitmek ister? Hediye edeceğimiz biletlerimiz var. – Biz isteriz, teşekkürler!"],
+      ["Möchtet ihr wissen, wer heute Geburtstag hat? – Luca. Und er möchte feiern.","Bugün kimin doğum günü olduğunu bilmek ister misiniz? – Luca. Ve o kutlamak istiyor."],
+      ["Im Labor müssen Sie Schutzkleidung tragen.","Laboratuvarda koruyucu kıyafet giymeniz gerekiyor."],
+      ["Im Labor darf nicht gegessen und getrunken werden.","Laboratuvarda yemek yemek ve içmek yasak."],
+      ["Sie dürfen keine Hunde ins Labor mitbringen, Hunde müssen vor der Tür angebunden werden.","Laboratuvara köpek getiremezsiniz, köpekler kapının önünde bağlanmalı."],
+      ["Die Labortür darf nur zum Betreten und Verlassen des Labors geöffnet werden.","Laboratuvar kapısı sadece girip çıkmak için açılmalı."],
+      ["Während der Arbeitszeit muss die Tür geschlossen bleiben.","Çalışma saatlerinde kapı kapalı kalmalı."],
+      ["Sie dürfen aus Sicherheitsgründen die Fenster des Labors nicht öffnen.","Güvenlik nedeniyle laboratuvarın pencerelerini açamazsınız."]
+    ]
+  },
+  {
+    id: "k3-koennen-fehler",
+    title: "K3: Können-Bedeutung & Fehler",
+    emoji: "🎹",
+    color: "#087F5B",
+    teaser: "3 Bedeutungen von können + Korrektur",
+    cards: [
+      ["Leider kann ich nicht so gut Klavier spielen, weil ich erst spät angefangen habe es zu lernen. (= Ich habe das gelernt.)","Maalesef piyanoyu pek iyi çalamıyorum çünkü öğrenmeye geç başladım. (= Bunu öğrendim.)"],
+      ["Aber es macht mir viel Spaß und immer, wenn ich kann, setze ich mich ans Klavier und übe. (= Es gibt die Chance/Möglichkeit.)","Ama çok keyif alıyorum ve ne zaman fırsatım olsa piyanonun başına oturup çalışıyorum. (= Fırsat/imkân var.)"],
+      ["Ich kann tagsüber Klavier üben. Abends nach 10 Uhr ist es verboten. (= Es ist erlaubt.)","Gündüzleri piyano çalışabilirim. Akşam 22'den sonra yasak. (= İzin var.)"],
+      ["Kannst du heute Nachmittag vorbeikommen? – Nein, tut mir leid, ich kann nicht, ich muss arbeiten. (= Es ist erlaubt / möglich.)","Bugün öğleden sonra uğrayabilir misin? – Hayır, üzgünüm, çalışmam gerekiyor. (= İzin/imkân var.)"],
+      ["Kannst du diese Matheaufgabe lösen? – Ich glaube schon, aber jetzt kann ich es nicht. Ich bin todmüde. (= Ich habe das gelernt.)","Bu matematik problemini çözebilir misin? – Sanırım evet ama şu an yapamam. Çok yorgunum. (= Bunu öğrendim.)"],
+      ["Was? Du willst mit den Flipflops ins Büro gehen? Das kannst du doch nicht machen! (= Es ist erlaubt.)","Ne? Ofise terlikle mi gitmek istiyorsun? Bunu yapamazsın! (= İzin verilmiyor.)"],
+      ["Martin kann hervorragend Tango und Salsa tanzen.","Martin muhteşem tango ve salsa dansı yapabiliyor."],
+      ["Seine Freundin geht nicht gerne tanzen, sie möchte lieber gut essen gehen.","Kız arkadaşı dansa gitmeyi sevmiyor, iyi bir yerde yemek yemeyi tercih ediyor."],
+      ["Leider hat Martin den Fuß verletzt und der Arzt hat gesagt, er darf jetzt nicht tanzen.","Maalesef Martin ayağını incitti ve doktor şimdi dans etmemesi gerektiğini söyledi."],
+      ["Der Arzt sagt, dass er nicht tanzen soll und dass er drei Wochen einen Verband tragen soll.","Doktor, dans etmemesi ve üç hafta bandaj takması gerektiğini söylüyor."],
+      ["Er darf auch nicht schwimmen gehen.","Yüzmeye gitmesine de izin yok."]
+    ]
+  },
+  {
+    id: "k3-praeteritum",
+    title: "K3: Präteritum & Urlaub",
+    emoji: "🕰️",
+    color: "#099268",
+    teaser: "Modalverben in der Vergangenheit",
+    cards: [
+      ["Ich wollte meine Stelle wechseln, denn ich musste auf meiner Stelle immer die gleichen Arbeiten machen.","İşimi değiştirmek istiyordum çünkü işimde hep aynı görevleri yapmak zorundaydım."],
+      ["Ich konnte nichts Neues dazulernen und durfte auch nur wenig selbstständig arbeiten.","Yeni bir şey öğrenemiyordum ve sadece az bağımsız çalışabiliyordum."],
+      ["Ich war unzufrieden, weil ich mein Fachwissen nicht verwenden konnte.","Memnun değildim çünkü uzmanlığımı kullanamıyordum."],
+      ["Außerdem waren die Arbeitszeiten in dem Betrieb festgelegt.","Ayrıca işletmedeki çalışma saatleri sabitti."],
+      ["Wir konnten nicht in Gleitzeit arbeiten, sondern mussten jeden Tag von 8.30 bis 17 Uhr anwesend sein.","Esnek saatte çalışamıyorduk, her gün 8.30-17.00 arası orada olmak zorundaydık."],
+      ["Ich wollte gerne einen Betrieb mit moderneren, familienfreundlicheren Arbeitszeiten finden.","Daha modern, aile dostu çalışma saatleri olan bir işletme bulmak istiyordum."],
+      ["Ich wollte mich eine Woche später bei einem anderen Betrieb vorstellen.","Bir hafta sonra başka bir işletmede mülakata girmek istiyordum."],
+      ["Dort durften die Mitarbeiter früh oder spät arbeiten, wie sie wollten.","Orada çalışanlar istedikleri gibi erken ya da geç çalışabiliyordu."],
+      ["Sie mussten nur zur Kernarbeitszeit zwischen 11 und 15 Uhr im Büro sein, damit sie gemeinsame Besprechungen machen konnten.","Ortak toplantılar yapabilmek için sadece 11-15 arası çekirdek çalışma saatinde ofiste olmaları gerekiyordu."],
+      ["Ich wollte möglichst schnell meine Bewerbungsunterlagen dorthin schicken.","Başvuru belgelerimi oraya mümkün olduğunca hızlı göndermek istiyordum."],
+      ["Aber leider war ich krank und konnte mich darum nicht kümmern.","Ama maalesef hastaydım ve bununla ilgilenemedim."],
+      ["Wenn man in Urlaub fährt, muss man meistens viele Vorbereitungen machen.","Tatile giderken genellikle birçok hazırlık yapmak gerekir."],
+      ["Ich habe kleine Kinder und darf schon eine Woche vorher anfangen zu packen.","Küçük çocuklarım var ve bir hafta önceden bavul hazırlamaya başlayabiliyorum."],
+      ["Bei meinem letzten Urlaub konnte ich erst in der letzten Nacht packen, weil ich bis spät abends arbeiten musste.","Son tatilimde ancak son gece bavul hazırlayabildim çünkü akşama kadar çalışmam gerekiyordu."],
+      ["Der Abschlussbericht meines Projekts musste noch fertig werden.","Projemin son raporunun hâlâ tamamlanması gerekiyordu."],
+      ["Ich durfte nicht einen Tag vorher Urlaub nehmen.","Bir gün önceden izin alamadım."],
+      ["Meine Kinder wollten mir helfen, aber sie durften nicht. Ich habe sie ins Bett geschickt, weil ich Angst vor dem totalen Chaos hatte.","Çocuklarım bana yardım etmek istedi ama izinleri yoktu. Onları yatağa gönderdim çünkü tam bir kaostan korkuyordum."],
+      ["Im Urlaub war es dann sehr schön und entspannend. Wir konnten den ganzen Tag tun und lassen, was wir wollten.","Tatilde her şey çok güzel ve rahatlatıcıydı. Bütün gün istediğimizi yapabiliyorduk."]
+    ]
+  }
+];
+
+let currentSection = null;
+let currentIndex = 0;
+let flipped = false;
+let doneMap = {};
+let searchQuery = "";
+let frontMode = "de"; // 'de' | 'tr' | 'random'
+let randomFlips = {};
+
+function isTrFirst(sectionId, index){
+  if(frontMode === "de") return false;
+  if(frontMode === "tr") return true;
+  if(!randomFlips[sectionId]) randomFlips[sectionId] = {};
+  if(!(index in randomFlips[sectionId])){
+    randomFlips[sectionId][index] = Math.random() < 0.5;
+  }
+  return randomFlips[sectionId][index];
+}
+function cycleFrontMode(){
+  frontMode = frontMode === "de" ? "tr" : (frontMode === "tr" ? "random" : "de");
+  flipped = false;
+  renderStudy();
+}
+function frontModeLabel(){
+  if(frontMode === "de") return "🇩🇪→🇹🇷 Almanca önde";
+  if(frontMode === "tr") return "🇹🇷→🇩🇪 Türkçe önde";
+  return "🔀 Karışık";
+}
+
+function chapterOf(id){
+  if(id.startsWith('k2-')) return 'Kapitel 2 · Wortposition';
+  if(id.startsWith('k3-')) return 'Kapitel 3 · Modalverben';
+  if(id.startsWith('k4-')) return 'Kapitel 4 · Perfekt';
+  if(id.startsWith('p1-')) return 'Partnerseite 1 (Kapitel 1-4)';
+  if(id.startsWith('k5-')) return 'Kapitel 5 · Verben mit Dativ und Akkusativ';
+  if(id.startsWith('k6-')) return 'Kapitel 6 · Artikel – Formen';
+  return 'Kapitel 1 · Konjugation Präsens';
+}
+
+async function loadProgress(){
+  for(const s of SECTIONS){
+    try{
+      const r = await window.storage.get('progress:'+s.id, false);
+      doneMap[s.id] = r && r.value ? new Set(JSON.parse(r.value)) : new Set();
+    }catch(e){ doneMap[s.id] = new Set(); }
+  }
+}
+async function saveProgress(sectionId){
+  try{
+    await window.storage.set('progress:'+sectionId, JSON.stringify([...doneMap[sectionId]]), false);
+  }catch(e){}
+}
+
+function totalStats(){
+  let total = 0, done = 0;
+  SECTIONS.forEach(s=>{
+    total += s.cards.length;
+    done += (doneMap[s.id] ? doneMap[s.id].size : 0);
+  });
+  return {total, done};
+}
+
+function renderHome(){
+  const app = document.getElementById('app');
+  const {total, done} = totalStats();
+  const pct = total ? Math.round(done/total*100) : 0;
+  let html = '<div class="home"><h1>Grammatik aktiv B1+ 🇩🇪</h1>';
+  html += '<p class="sub">Deutsch–Türkçe Karteikarten · Kapitel 1–6</p>';
+
+  html += `<div class="stats-card">
+    <div class="stats-row">
+      <div><div class="stats-num">${done}/${total}</div><div class="stats-label">kart tamamlandı</div></div>
+      <div style="text-align:right"><div class="stats-num">${pct}%</div><div class="stats-label">toplam ilerleme</div></div>
+    </div>
+    <div class="stats-bar-wrap"><div class="stats-bar" style="width:${pct}%"></div></div>
+  </div>`;
+
+  html += `<input class="searchbox" placeholder="🔍 Bölüm ara... (z.B. Perfekt, Dativ)" value="${searchQuery}" oninput="onSearch(this.value)">`;
+
+  const q = searchQuery.trim().toLowerCase();
+  const filtered = SECTIONS.filter(s => !q || s.title.toLowerCase().includes(q) || s.teaser.toLowerCase().includes(q) || chapterOf(s.id).toLowerCase().includes(q));
+
+  if(filtered.length === 0){
+    html += '<div class="empty-msg">Sonuç bulunamadı.</div>';
+  } else {
+    let lastChapter = null;
+    filtered.forEach((s, i)=>{
+      const ch = chapterOf(s.id);
+      if(ch !== lastChapter){
+        if(lastChapter !== null) html += '</div>';
+        html += `<div class="kgroup">${ch}</div><div class="grid">`;
+        lastChapter = ch;
+      }
+      const done_s = doneMap[s.id] ? doneMap[s.id].size : 0;
+      const pctS = Math.round(done_s/s.cards.length*100);
+      const isComplete = done_s === s.cards.length;
+      html += `<div class="card-tile" style="--tc:${s.color}" onclick="openSection('${s.id}')">
+        ${isComplete ? '<div class="done-badge">✅</div>' : ''}
+        <div><span class="emoji">${s.emoji}</span>
+        <h3>${s.title}</h3>
+        <p>${s.teaser}</p></div>
+        <div>
+          <span class="pill">${s.cards.length} kart</span>
+          <div class="progress-mini">
+            <div class="mini-bar-wrap"><div class="mini-bar" style="width:${pctS}%"></div></div>
+            <span>${done_s}/${s.cards.length}</span>
+          </div>
+        </div>
+      </div>`;
+    });
+    html += '</div>';
+  }
+  html += '</div>';
+  app.innerHTML = html;
+}
+
+function onSearch(val){
+  searchQuery = val;
+  renderHome();
+  const box = document.querySelector('.searchbox');
+  if(box){ box.focus(); box.setSelectionRange(val.length, val.length); }
+}
+
+function openSection(id){
+  currentSection = SECTIONS.find(s=>s.id===id);
+  currentIndex = 0;
+  flipped = false;
+  renderStudy();
+}
+
+function renderStudy(){
+  const app = document.getElementById('app');
+  const s = currentSection;
+  const total = s.cards.length;
+  const [de, tr] = s.cards[currentIndex];
+  const doneSet = doneMap[s.id];
+  const pct = ((currentIndex+1)/total*100).toFixed(0);
+  const trFirst = isTrFirst(s.id, currentIndex);
+  const frontText = trFirst ? tr : de;
+  const backText = trFirst ? de : tr;
+  app.innerHTML = `
+    <div class="study active" style="--tc:${s.color}">
+      <div class="topbar">
+        <button class="backbtn" onclick="renderHome()">← Geri</button>
+        <span class="label">${s.emoji} ${s.title}</span>
+        <button class="fsbtn" onclick="toggleFullscreen()">⛶</button>
+      </div>
+      <div style="display:flex; justify-content:center; padding:0 16px 8px;">
+        <button class="dirbtn" onclick="cycleFrontMode()">${frontModeLabel()}</button>
+      </div>
+      <div class="barwrap"><div class="bar" style="width:${pct}%"></div></div>
+      <div class="stage">
+        <div class="flashcard ${flipped?'flipped':''}" id="fc" onclick="flipCard()">
+          <div class="face front">
+            <div class="de-text">${frontText}</div>
+            <div class="hint">👆 Çevirmek için dokun</div>
+          </div>
+          <div class="face back">
+            <div class="tr-text">${backText}</div>
+            <div class="hint">${trFirst?'🇹🇷':'🇩🇪'} ${frontText}</div>
+          </div>
+        </div>
+      </div>
+      <div class="navrow">
+        <button class="navbtn" onclick="prevCard()" ${currentIndex===0?'disabled':''}>‹</button>
+        <span class="counter">${currentIndex+1} / ${total} ${doneSet.has(currentIndex)?'✓':''}</span>
+        <button class="navbtn" onclick="nextCard()">${currentIndex===total-1?'✓':'›'}</button>
+      </div>
+    </div>`;
+}
+
+function flipCard(){
+  flipped = !flipped;
+  document.getElementById('fc').classList.toggle('flipped');
+  if(flipped){
+    doneMap[currentSection.id].add(currentIndex);
+    saveProgress(currentSection.id);
+  }
+}
+function nextCard(){
+  if(currentIndex < currentSection.cards.length-1){
+    currentIndex++; flipped=false; renderStudy();
+  } else {
+    renderHome();
+  }
+}
+function prevCard(){
+  if(currentIndex>0){ currentIndex--; flipped=false; renderStudy(); }
+}
+function toggleFullscreen(){
+  const el = document.documentElement;
+  if(!document.fullscreenElement && !document.webkitFullscreenElement){
+    if(el.requestFullscreen) el.requestFullscreen();
+    else if(el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+  } else {
+    if(document.exitFullscreen) document.exitFullscreen();
+    else if(document.webkitExitFullscreen) document.webkitExitFullscreen();
+  }
+}
+document.addEventListener('keydown', (e)=>{
+  if(!currentSection) return;
+  if(e.key==='ArrowRight') nextCard();
+  else if(e.key==='ArrowLeft') prevCard();
+  else if(e.key===' '){ e.preventDefault(); flipCard(); }
+});
+let touchStartX=0;
+document.addEventListener('touchstart', e=>{ touchStartX = e.changedTouches[0].screenX; });
+document.addEventListener('touchend', e=>{
+  if(!currentSection) return;
+  const dx = e.changedTouches[0].screenX - touchStartX;
+  if(Math.abs(dx) > 60){ dx<0 ? nextCard() : prevCard(); }
+});
+
+(async ()=>{
+  await loadProgress();
+  renderHome();
+})();
+</script>
+</body>
+</html>
